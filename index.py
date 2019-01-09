@@ -15,16 +15,17 @@ def getHtml(url):
 def getSelectorText(options):
   html = getHtml(htmlUrl)
   Selector = etree.HTML(html)
-  labelResList = Selector.xpath(labelRule)
-  urlResList = Selector.xpath(urlRule)
+  print(options.items())
+  idList = Selector.xpath(options['id'])
+  nameList = Selector.xpath(options['name'])
   def setResFunc(item):
     index = item[0]
     val = item[1]
     return {
-      'label': val.strip(),
-      'url': urlResList[index].strip()
+      'id': val.strip(),
+      'name': nameList[index].strip()
     }
-  resList = map(setResFunc, enumerate(labelResList))
+  resList = map(setResFunc, enumerate(idList))
   return list(resList)
 
 # 品牌brand
@@ -38,6 +39,9 @@ def getBrandList():
   }
   brandList = getSelectorText(barndOptions)
   return brandList
+
+resList = getBrandList()
+print(resList)
 
 # class brandList:
 #   def __init__(self, baseRule):
