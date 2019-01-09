@@ -3,8 +3,9 @@
 import requests
 import urllib.request
 from lxml import etree
+from functools import reduce
 
-htmlUrl = 'https://www.autohome.com.cn/car/'
+htmlUrl = 'https://car.autohome.com.cn/AsLeftMenu/As_LeftListNew.ashx?typeId=1%20'
 
 # 获取页面内容
 def getHtml(url):
@@ -16,9 +17,7 @@ def getSelectorText(options):
   html = getHtml(htmlUrl)
   Selector = etree.HTML(html)
   def xpathFunc(item):
-    return {
-      item[0]: Selector.xpath(item[1])
-    }
+    return Selector.xpath(item[1])
   resXpathList = list(map(xpathFunc, options.items()))
   return resXpathList
 
@@ -36,29 +35,37 @@ def getSelectorText(options):
 
 # 品牌brand
 def getBrandList():
-  baseRule = '//div[@id="htmlA"]/dl'
+  baseRule = '//div[@class="cartree-letter"]/'
+  subRule = baseRule + 'preceding-sibling::ul/li/'
+
+  childId = subRule + '/@id'
+  childUrl = subRule + '/a/@href'
+  childLabel = subRule + '/a/text()'
+  childNum = subRule + '/a/em/text()'
+  sort = baseRule + 'text()'
   barndOptions = {
-    'id': baseRule + '/@id',
-    'name': baseRule + '/dt/div/a/text()',
-    'url': baseRule + '/dt/a/@href',
-    'imgUrl': baseRule + '/dt/a/img/@src'
+    'sort': sort,
+    'data': '|'.join([sort, childId, childUrl, childLabel, childNum])
   }
   brandList = getSelectorText(barndOptions)
+
+  # def testFunc(item):
+  # resBrandList = list(map(testFunc, brandList[0]))
+  for i in range(len(brandList[0])):
+    if i == len(brandList[0]) - 1:
+      break
+    else:
+      indexStr = brandList[0][i]
+      nextIndexStr = brandList[0][i + 1]
+      index = brandList[1].index(indexStr)
+      nextIndex = brandList[1].index(nextIndexStr)
+      res = brandList[1][index - 1:nextIndex - 1]
+      print(res)
+  # print(brandList[1][1:21])
+  # print(brandList[1])
+  # print(brandList[1].index('A'))
+  
   return brandList
 
 resList = getBrandList()
-print(resList)
-
-# class brandList:
-#   def __init__(self, baseRule):
-#     self.id = '%s/@id' %(baseRule)
-#     self.name = '%s/dt/div/a/text()' %(baseRule)
-#     self.url = '%s/dt/a/@href' %(baseRule)
-#     self.imgUrl = '%s/dt/a/img/@src' %(baseRule)
-
-
-# baseRule = '//div[@id="htmlA"]/dl'
-
-# # 实例化类
-# brand = brandList
-# brand.getResList()
+# print(resList)
