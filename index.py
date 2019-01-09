@@ -12,7 +12,7 @@ def getHtml(url):
   return html.text
 
 # 获取连接组
-def getSelectorText(labelRule, urlRule):
+def getSelectorText(options):
   html = getHtml(htmlUrl)
   Selector = etree.HTML(html)
   labelResList = Selector.xpath(labelRule)
@@ -28,12 +28,27 @@ def getSelectorText(labelRule, urlRule):
   return list(resList)
 
 # 品牌brand
-def getBrand():
-  baseRule = '//div[@id="contentSeries"]/dl[@class="brand-series__item"]/dd'
+def getBrandList():
+  baseRule = '//div[@id="htmlA"]/dl'
   barndOptions = {
-    'name': baseRule + '/a/@cname'
-    'imgUrl': baseRule + '/img/@src'
+    'id': baseRule + '/@id',
+    'name': baseRule + '/dt/div/a/text()',
+    'url': baseRule + '/dt/a/@href',
+    'imgUrl': baseRule + '/dt/a/img/@src'
   }
-  # labelRule = '//ul[@id="nav_hot_brand"]/li/a/text()'
-  resList = getSelectorText(labelRule, urlRule)
-  return resList
+  brandList = getSelectorText(barndOptions)
+  return brandList
+
+# class brandList:
+#   def __init__(self, baseRule):
+#     self.id = '%s/@id' %(baseRule)
+#     self.name = '%s/dt/div/a/text()' %(baseRule)
+#     self.url = '%s/dt/a/@href' %(baseRule)
+#     self.imgUrl = '%s/dt/a/img/@src' %(baseRule)
+
+
+# baseRule = '//div[@id="htmlA"]/dl'
+
+# # 实例化类
+# brand = brandList
+# brand.getResList()
