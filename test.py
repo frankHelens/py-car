@@ -24,7 +24,8 @@ def downFileImg(reg, text):
     urllib.request.urlretrieve(img, '%s.jpg' %x)
     x += 1
 
-html = getHtml('https://car.autohome.com.cn/AsLeftMenu/As_LeftListNew.ashx?typeId=1%20')
-getFile('car.html', html)
+# html = getHtml('https://car.autohome.com.cn/AsLeftMenu/As_LeftListNew.ashx?typeId=1%20')
+html = getHtml('https://car.autohome.com.cn/price/brand-33.html')
+getFile('car-detail.html', html)
 # reg = r'src="(http.+?\.jpg)"'
 # downFileImg(reg, html)
